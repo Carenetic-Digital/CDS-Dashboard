@@ -1,21 +1,590 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import practicesData from '../data/practices.json';
+
+const lastUpdated = "June 19, 2026";
 ---
 
-<BaseLayout title="Site Factory">
-  <main class="min-h-screen flex items-center justify-center">
-    <div class="text-center p-8">
-      <h1 class="text-4xl font-display font-bold text-primary mb-4">
-        Site Factory Ready
-      </h1>
-      <p class="text-lg text-neutral-600 mb-8">
-        Run <code class="bg-neutral-200 px-2 py-1 rounded">/project:intake</code> to begin.
-      </p>
-      <div class="text-sm text-neutral-500">
-        <p>1. Edit <code>intake/INTAKE.md</code> with your project details</p>
-        <p>2. Edit <code>intake/sitemap.md</code> with your page structure</p>
-        <p>3. Run the intake command to start generation</p>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Practice Website Tracker — Premier Dentist Partners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style is:global>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f4f6f8;
+      color: #2C3E50;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: #1A3A52;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .header-logo {
+      height: 44px;
+      width: auto;
+      flex-shrink: 0;
+    }
+    .header-logo-fallback {
+      display: none;
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(255,255,255,0.25);
+      flex-shrink: 0;
+    }
+    .header-text h1 {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .header-text p {
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 32px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .search-input {
+      flex: 1;
+      max-width: 320px;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #2C3E50;
+      background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7' stroke='%235A6F82' stroke-width='2'/%3E%3Cpath d='m16.5 16.5 3.5 3.5' stroke='%235A6F82' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 10px center;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: #3EB489;
+      box-shadow: 0 0 0 3px rgba(62,180,137,0.15);
+    }
+    .filter-label {
+      font-size: 13px;
+      color: #5A6F82;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .status-filter {
+      padding: 8px 12px;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #2C3E50;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .status-filter:focus {
+      outline: none;
+      border-color: #3EB489;
+      box-shadow: 0 0 0 3px rgba(62,180,137,0.15);
+    }
+    .results-count {
+      margin-left: auto;
+      font-size: 13px;
+      color: #5A6F82;
+      white-space: nowrap;
+    }
+    .nav-tab-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      color: #5A6F82;
+      border: 1px solid transparent;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .nav-tab-link:hover {
+      background: #f4f6f8;
+      color: #1A3A52;
+      border-color: #d1d9e0;
+    }
+    .nav-tab-link.active {
+      background: #1A3A52;
+      color: white;
+      border-color: #1A3A52;
+    }
+    .filter-divider {
+      width: 1px;
+      height: 24px;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    /* ── Main content ── */
+    .main-content {
+      flex: 1;
+      padding: 28px 32px;
+    }
+
+    /* ── Table ── */
+    .table-wrapper {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .table-scroll {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+    thead tr {
+      background: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    thead th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #5A6F82;
+      padding: 12px 16px;
+      text-align: left;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    thead th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s;
+    }
+    thead th.sortable:hover { color: #1A3A52; }
+    thead th.sort-active { color: #1A3A52; }
+    .sort-icon {
+      display: inline-block;
+      margin-left: 4px;
+      opacity: 0.5;
+      font-size: 10px;
+    }
+    thead th.sort-active .sort-icon { opacity: 1; }
+
+    tbody tr {
+      border-bottom: 1px solid #f0f4f7;
+      transition: background 0.1s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody td {
+      padding: 14px 16px;
+      font-size: 14px;
+      vertical-align: middle;
+      color: #2C3E50;
+    }
+    .practice-name {
+      font-weight: 500;
+    }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .badge-building { background: #3EB489; }
+    .badge-live { background: #1A3A52; }
+    .badge-on_hold { background: #8A9BAD; }
+
+    /* ── Link buttons ── */
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid #d1d9e0;
+      background: #f4f6f8;
+      color: #1A3A52;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .link-btn:hover {
+      background: #1A3A52;
+      color: white;
+      border-color: #1A3A52;
+    }
+    .link-btn.teal {
+      background: #edf8f4;
+      border-color: #3EB489;
+      color: #2a7a5e;
+    }
+    .link-btn.teal:hover {
+      background: #3EB489;
+      color: white;
+      border-color: #3EB489;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 56px 32px;
+      color: #5A6F82;
+      font-size: 15px;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    .empty-state svg {
+      display: block;
+      margin: 0 auto 16px;
+      opacity: 0.35;
+    }
+
+    /* ── Mobile cards ── */
+    .cards-container {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #2C3E50;
+      line-height: 1.3;
+    }
+    .card-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      background: #122A3E;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer span {
+      color: #5A6F82;
+      font-size: 13px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 767px) {
+      .header { padding: 16px; gap: 14px; }
+      .header-logo { height: 36px; }
+      .header-text h1 { font-size: 18px; }
+      .filter-bar { padding: 10px 16px; flex-wrap: wrap; }
+      .search-input { max-width: 100%; width: 100%; }
+      .filter-divider { display: none; }
+      .nav-tab-link { font-size: 12px; padding: 6px 10px; }
+      .results-count { display: none; }
+      .main-content { padding: 16px; }
+      .table-wrapper { display: none; }
+      .empty-state { display: none; }
+      .cards-container { display: flex; }
+      .footer { padding: 14px 16px; flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .main-content { padding: 20px 24px; }
+      .filter-bar { padding: 12px 24px; }
+      .header { padding: 18px 24px; }
+      .footer { padding: 16px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <img
+      class="header-logo"
+      src="https://premierdentistpartners.com/wp-content/uploads/2022/12/Group-84508302.svg"
+      alt="Premier Dentist Partners"
+      onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';"
+    />
+    <span class="header-logo-fallback" id="logo-fallback">Premier Dentist Partners</span>
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <h1>Practice Website Tracker</h1>
+      <p>Managed by Carenetic</p>
+    </div>
+  </header>
+
+  <!-- Search & Filter Bar -->
+  <div class="filter-bar">
+    <input
+      id="search-input"
+      class="search-input"
+      type="text"
+      placeholder="Search practices..."
+      autocomplete="off"
+    />
+    <span class="filter-label">Status:</span>
+    <select id="status-filter" class="status-filter">
+      <option value="all">All</option>
+      <option value="building">In Build</option>
+      <option value="live">Live</option>
+      <option value="on_hold">On Hold</option>
+    </select>
+    <div class="filter-divider"></div>
+    <a href="https://app.asana.com/read-only/PDP-Practice-Timelines/2462109727483/e349ec20f0cfcc6239ed2158afca83aa/timeline" target="_blank" rel="noopener noreferrer" class="nav-tab-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2"/>
+        <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M7 15h4M7 18h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Timelines
+    </a>
+    <span class="results-count" id="results-count"></span>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+
+    <!-- Desktop table -->
+    <div class="table-wrapper" id="table-wrapper">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable sort-active" data-sort="name">
+                Practice Name<span class="sort-icon" id="sort-icon-name">↑</span>
+              </th>
+              <th class="sortable" data-sort="status">
+                Status<span class="sort-icon" id="sort-icon-status">⇅</span>
+              </th>
+              <th>Live Site</th>
+              <th>Staging</th>
+              <th>BugHerd</th>
+              <th>CMS</th>
+            </tr>
+          </thead>
+          <tbody id="practices-tbody"></tbody>
+        </table>
       </div>
     </div>
-  </main>
-</BaseLayout>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="empty-state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="7" stroke="#5A6F82" stroke-width="2"/>
+        <path d="m16.5 16.5 3.5 3.5" stroke="#5A6F82" stroke-width="2" stroke-linecap="round"/>
+        <path d="M8 11h6M11 8v6" stroke="#5A6F82" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      No practices match your search.
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="cards-container" id="cards-container"></div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>Built by Carenetic</span>
+    <span>Last updated: {lastUpdated}</span>
+  </footer>
+
+  <script define:vars={{ practices: practicesData.practices }}>
+    let searchQuery = '';
+    let statusFilter = 'all';
+    let sortField = 'name';
+    let sortDir = 'asc';
+
+    function statusLabel(status) {
+      const map = { building: 'In Build', live: 'Live', on_hold: 'On Hold' };
+      return map[status] || status;
+    }
+
+    function getFiltered() {
+      let result = [...practices];
+
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        result = result.filter(p => p.name.toLowerCase().includes(q));
+      }
+
+      if (statusFilter !== 'all') {
+        result = result.filter(p => p.status === statusFilter);
+      }
+
+      result.sort((a, b) => {
+        const av = sortField === 'name' ? a.name : statusLabel(a.status);
+        const bv = sortField === 'name' ? b.name : statusLabel(b.status);
+        return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+      });
+
+      return result;
+    }
+
+    function buildLinks(p) {
+      const { status, liveSiteUrl, stagingUrl, bugherdUrl, cmsUrl } = p;
+      const links = { liveSite: '', staging: '', bugherd: '', cms: '' };
+
+      if (status === 'live') {
+        if (liveSiteUrl) links.liveSite = `<a href="${liveSiteUrl}" target="_blank" rel="noopener noreferrer" class="link-btn">View Site</a>`;
+        if (cmsUrl) links.cms = `<a href="${cmsUrl}" target="_blank" rel="noopener noreferrer" class="link-btn">CMS</a>`;
+      } else if (status === 'building') {
+        if (stagingUrl) links.staging = `<a href="${stagingUrl}" target="_blank" rel="noopener noreferrer" class="link-btn teal">Staging</a>`;
+        if (bugherdUrl) links.bugherd = `<a href="${bugherdUrl}" target="_blank" rel="noopener noreferrer" class="link-btn teal">BugHerd</a>`;
+      } else if (status === 'on_hold') {
+        if (liveSiteUrl) links.liveSite = `<a href="${liveSiteUrl}" target="_blank" rel="noopener noreferrer" class="link-btn">View Site</a>`;
+        if (stagingUrl) links.staging = `<a href="${stagingUrl}" target="_blank" rel="noopener noreferrer" class="link-btn">Staging</a>`;
+      }
+
+      return links;
+    }
+
+    function render() {
+      const data = getFiltered();
+      const tbody = document.getElementById('practices-tbody');
+      const cards = document.getElementById('cards-container');
+      const emptyState = document.getElementById('empty-state');
+      const tableWrapper = document.getElementById('table-wrapper');
+      const resultsCount = document.getElementById('results-count');
+
+      const total = practices.length;
+      resultsCount.textContent = data.length === total
+        ? `${total} practice${total !== 1 ? 's' : ''}`
+        : `${data.length} of ${total} practice${total !== 1 ? 's' : ''}`;
+
+      if (data.length === 0) {
+        tbody.innerHTML = '';
+        cards.innerHTML = '';
+        tableWrapper.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      tableWrapper.style.display = '';
+      emptyState.style.display = 'none';
+
+      // Table rows
+      tbody.innerHTML = data.map(p => {
+        const l = buildLinks(p);
+        return `<tr>
+          <td><span class="practice-name">${p.name}</span></td>
+          <td><span class="badge badge-${p.status}">${statusLabel(p.status)}</span></td>
+          <td>${l.liveSite}</td>
+          <td>${l.staging}</td>
+          <td>${l.bugherd}</td>
+          <td>${l.cms}</td>
+        </tr>`;
+      }).join('');
+
+      // Mobile cards
+      cards.innerHTML = data.map(p => {
+        const l = buildLinks(p);
+        const allLinks = [l.liveSite, l.staging, l.bugherd, l.cms].filter(Boolean).join('');
+        return `<div class="card">
+          <div class="card-header">
+            <span class="card-name">${p.name}</span>
+            <span class="badge badge-${p.status}">${statusLabel(p.status)}</span>
+          </div>
+          ${allLinks ? `<div class="card-links">${allLinks}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function updateSortHeaders() {
+      document.querySelectorAll('th[data-sort]').forEach(th => {
+        const field = th.dataset.sort;
+        const icon = document.getElementById(`sort-icon-${field}`);
+        th.classList.toggle('sort-active', field === sortField);
+        if (icon) icon.textContent = field === sortField ? (sortDir === 'asc' ? '↑' : '↓') : '⇅';
+      });
+    }
+
+    document.getElementById('search-input').addEventListener('input', e => {
+      searchQuery = e.target.value;
+      render();
+    });
+
+    document.getElementById('status-filter').addEventListener('change', e => {
+      statusFilter = e.target.value;
+      render();
+    });
+
+    document.querySelectorAll('th[data-sort]').forEach(th => {
+      th.addEventListener('click', () => {
+        const field = th.dataset.sort;
+        if (sortField === field) {
+          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortField = field;
+          sortDir = 'asc';
+        }
+        updateSortHeaders();
+        render();
+      });
+    });
+
+    render();
+  </script>
+
+</body>
+</html>
