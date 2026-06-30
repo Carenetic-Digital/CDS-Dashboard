@@ -1,7 +1,12 @@
 {
-  "name": "spark-site-template",
+  "name": "cds-dashboard",
   "compatibility_date": "2026-02-01",
   "assets": {
     "directory": "./dist"
+  },
+  "env": {
+    "staging": {
+      "name": "cds-dashboard-staging"
+    }
   }
 }
