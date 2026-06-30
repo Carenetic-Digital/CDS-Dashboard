@@ -9,7 +9,7 @@ const lastUpdated = "June 19, 2026";
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Practice Website Tracker — Premier Dentist Partners</title>
+  <title>Practice Website Tracker — Canadian Dental Services Corp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -27,16 +27,24 @@ const lastUpdated = "June 19, 2026";
 
     /* ── Header ── */
     .header {
-      background: #1A3A52;
+      background: #004E7C;
       padding: 20px 32px;
       display: flex;
       align-items: center;
       gap: 20px;
     }
-    .header-logo {
-      height: 44px;
-      width: auto;
+    .header-logo-wrap {
+      background: white;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
       flex-shrink: 0;
+    }
+    .header-logo {
+      height: 32px;
+      width: auto;
+      display: block;
     }
     .header-logo-fallback {
       display: none;
@@ -137,13 +145,13 @@ const lastUpdated = "June 19, 2026";
     }
     .nav-tab-link:hover {
       background: #f4f6f8;
-      color: #1A3A52;
+      color: #004E7C;
       border-color: #d1d9e0;
     }
     .nav-tab-link.active {
-      background: #1A3A52;
+      background: #004E7C;
       color: white;
-      border-color: #1A3A52;
+      border-color: #004E7C;
     }
     .filter-divider {
       width: 1px;
@@ -193,8 +201,8 @@ const lastUpdated = "June 19, 2026";
       user-select: none;
       transition: color 0.15s;
     }
-    thead th.sortable:hover { color: #1A3A52; }
-    thead th.sort-active { color: #1A3A52; }
+    thead th.sortable:hover { color: #004E7C; }
+    thead th.sort-active { color: #004E7C; }
     .sort-icon {
       display: inline-block;
       margin-left: 4px;
@@ -231,8 +239,8 @@ const lastUpdated = "June 19, 2026";
       white-space: nowrap;
       letter-spacing: 0.02em;
     }
-    .badge-building { background: #3EB489; }
-    .badge-live { background: #1A3A52; }
+    .badge-in_progress { background: #3EB489; }
+    .badge-completed { background: #004E7C; }
     .badge-on_hold { background: #8A9BAD; }
 
     /* ── Link buttons ── */
@@ -247,14 +255,14 @@ const lastUpdated = "June 19, 2026";
       text-decoration: none;
       border: 1px solid #d1d9e0;
       background: #f4f6f8;
-      color: #1A3A52;
+      color: #004E7C;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
       white-space: nowrap;
     }
     .link-btn:hover {
-      background: #1A3A52;
+      background: #004E7C;
       color: white;
-      border-color: #1A3A52;
+      border-color: #004E7C;
     }
     .link-btn.teal {
       background: #edf8f4;
@@ -318,7 +326,7 @@ const lastUpdated = "June 19, 2026";
 
     /* ── Footer ── */
     .footer {
-      background: #122A3E;
+      background: #003162;
       padding: 16px 32px;
       display: flex;
       justify-content: space-between;
@@ -334,7 +342,7 @@ const lastUpdated = "June 19, 2026";
     /* ── Responsive ── */
     @media (max-width: 767px) {
       .header { padding: 16px; gap: 14px; }
-      .header-logo { height: 36px; }
+      .header-logo { height: 26px; }
       .header-text h1 { font-size: 18px; }
       .filter-bar { padding: 10px 16px; flex-wrap: wrap; }
       .search-input { max-width: 100%; width: 100%; }
@@ -360,13 +368,15 @@ const lastUpdated = "June 19, 2026";
 
   <!-- Header -->
   <header class="header">
-    <img
-      class="header-logo"
-      src="https://premierdentistpartners.com/wp-content/uploads/2022/12/Group-84508302.svg"
-      alt="Premier Dentist Partners"
-      onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';"
-    />
-    <span class="header-logo-fallback" id="logo-fallback">Premier Dentist Partners</span>
+    <div class="header-logo-wrap">
+      <img
+        class="header-logo"
+        src="/images/cds-logo.png"
+        alt="Canadian Dental Services Corp"
+        onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';"
+      />
+    </div>
+    <span class="header-logo-fallback" id="logo-fallback">Canadian Dental Services Corp</span>
     <div class="header-divider"></div>
     <div class="header-text">
       <h1>Practice Website Tracker</h1>
@@ -386,12 +396,12 @@ const lastUpdated = "June 19, 2026";
     <span class="filter-label">Status:</span>
     <select id="status-filter" class="status-filter">
       <option value="all">All</option>
-      <option value="building">In Build</option>
-      <option value="live">Live</option>
+      <option value="in_progress">In Progress</option>
+      <option value="completed">Completed</option>
       <option value="on_hold">On Hold</option>
     </select>
     <div class="filter-divider"></div>
-    <a href="https://app.asana.com/read-only/PDP-Practice-Timelines/2462109727483/e349ec20f0cfcc6239ed2158afca83aa/timeline" target="_blank" rel="noopener noreferrer" class="nav-tab-link">
+    <a href="https://app.asana.com/read-only/CDS-Practice-Timelines/2462109727483/3d85ace17c067d71786c162254fccbc1/timeline" target="_blank" rel="noopener noreferrer" class="nav-tab-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2"/>
         <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -445,7 +455,7 @@ const lastUpdated = "June 19, 2026";
 
   <!-- Footer -->
   <footer class="footer">
-    <span>Built by Carenetic</span>
+    <span>Built by <a href="https://careneticdigital.com/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline; text-underline-offset: 2px; opacity: 0.8;">Carenetic</a></span>
     <span>Last updated: {lastUpdated}</span>
   </footer>
 
@@ -456,7 +466,7 @@ const lastUpdated = "June 19, 2026";
     let sortDir = 'asc';
 
     function statusLabel(status) {
-      const map = { building: 'In Build', live: 'Live', on_hold: 'On Hold' };
+      const map = { in_progress: 'In Progress', completed: 'Completed', on_hold: 'On Hold' };
       return map[status] || status;
     }
 
@@ -485,10 +495,11 @@ const lastUpdated = "June 19, 2026";
       const { status, liveSiteUrl, stagingUrl, bugherdUrl, cmsUrl } = p;
       const links = { liveSite: '', staging: '', bugherd: '', cms: '' };
 
-      if (status === 'live') {
+      if (status === 'completed') {
         if (liveSiteUrl) links.liveSite = `<a href="${liveSiteUrl}" target="_blank" rel="noopener noreferrer" class="link-btn">View Site</a>`;
         if (cmsUrl) links.cms = `<a href="${cmsUrl}" target="_blank" rel="noopener noreferrer" class="link-btn">CMS</a>`;
-      } else if (status === 'building') {
+      } else if (status === 'in_progress') {
+        if (liveSiteUrl) links.liveSite = `<a href="${liveSiteUrl}" target="_blank" rel="noopener noreferrer" class="link-btn">Current Site</a>`;
         if (stagingUrl) links.staging = `<a href="${stagingUrl}" target="_blank" rel="noopener noreferrer" class="link-btn teal">Staging</a>`;
         if (bugherdUrl) links.bugherd = `<a href="${bugherdUrl}" target="_blank" rel="noopener noreferrer" class="link-btn teal">BugHerd</a>`;
       } else if (status === 'on_hold') {
