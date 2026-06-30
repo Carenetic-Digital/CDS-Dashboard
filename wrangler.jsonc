@@ -4,6 +4,9 @@
   "assets": {
     "directory": "./dist"
   },
+  "routes": [
+    { "pattern": "cds-dashboard.spark0.io", "custom_domain": true }
+  ],
   "env": {
     "staging": {
       "name": "cds-dashboard-staging"
