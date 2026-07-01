@@ -1,0 +1,20 @@
+{
+  "practices": [
+    {
+      "name": "Able Family Dental",
+      "status": "in_progress",
+      "liveSiteUrl": "https://ablefamilydental.com/",
+      "stagingUrl": "https://able-family-dental.spark0.io/",
+      "bugherdUrl": "https://www.bugherd.com/projects/528536/kanban",
+      "cmsUrl": ""
+    },
+    {
+      "name": "Wildwood Dental Clinic",
+      "status": "completed",
+      "liveSiteUrl": "https://wildwooddentalclinic.com/",
+      "stagingUrl": "",
+      "bugherdUrl": "",
+      "cmsUrl": "https://wildwood-dental-cms.spark0.io/"
+    }
+  ]
+}
